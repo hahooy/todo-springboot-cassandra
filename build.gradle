@@ -36,7 +36,7 @@ tasks.named('test') {
 
 openApiGenerate {
 	generatorName = "spring"
-	inputSpec = "$rootDir/api.yaml"
+	inputSpec = "$projectDir/api/api.yaml"
 	outputDir = "$buildDir/generated/api"
 	apiPackage = "com.hahooy.todo.api"
 	modelPackage = "com.hahooy.todo.api.models"

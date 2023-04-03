@@ -5,18 +5,6 @@ info:
     This is a sample todo service 
   version: 1.0.0
 paths:
-  /hello:
-    get:
-      description: return greeting message
-      operationId: hello
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: string
-
   /tasks:
     get:
       description: Returns a list of tasks
@@ -47,10 +35,34 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Task'
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
       responses:
         '200':
           description: Successfully created a new task
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+
+  /tasks/{task_id}:
+    get:
+      description: Get task by id
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully returned a list of tasks
           content:
             application/json:
               schema:
@@ -61,9 +73,12 @@ components:
     Task:
       type: object
       required:
-        - task_name
+        - task_id
+        - name
       properties:
-        task_name:
+        task_id:
+          type: string
+        name:
           type: string
         description:
           type: string

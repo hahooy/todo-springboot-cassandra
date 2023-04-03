@@ -16,6 +16,7 @@ public class TasksController implements TasksApi {
     public ResponseEntity<List<Task>> tasksGet(Integer limit, Integer offset) {
         var tasks = List.of(
                 Task.builder()
+                        .taskId(UUID.randomUUID().toString())
                         .name("foo task")
                         .description("foo task description")
                         .build()
@@ -30,7 +31,7 @@ public class TasksController implements TasksApi {
                 .name(request.getName())
                 .description(request.getDescription())
                 .build();
-        return TasksApi.super.tasksPost(request);
+        return ResponseEntity.ok(task);
     }
 
     @Override

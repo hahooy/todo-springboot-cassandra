@@ -25,6 +25,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
 	implementation 'io.swagger.core.v3:swagger-core:2.2.8'
+	implementation 'javax.inject:javax.inject:1'
+	implementation 'com.datastax.cassandra:cassandra-driver-core:3.11.3'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

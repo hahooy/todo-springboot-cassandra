@@ -43,6 +43,8 @@ paths:
                   type: string
                 description:
                   type: string
+                username:
+                  type: string
       responses:
         '200':
           description: Successfully created a new task
@@ -81,4 +83,6 @@ components:
         name:
           type: string
         description:
+          type: string
+        username:
           type: string

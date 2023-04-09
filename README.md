@@ -19,7 +19,8 @@ CREATE TABLE todo.task (
    task_id timeuuid PRIMARY KEY,
    name text, 
    description text, 
-   username text, 
+   username text,
+   creation_time timestamp, 
 );
 
 CREATE TABLE todo.tasks_by_username ( 

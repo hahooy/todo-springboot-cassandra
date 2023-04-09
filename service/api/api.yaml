@@ -86,3 +86,6 @@ components:
           type: string
         username:
           type: string
+        creation_time:
+          type: string
+          format: date-time

@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.inject.Inject;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -56,6 +58,7 @@ public class TasksController implements TasksApi {
                 .name(request.getName())
                 .description(request.getDescription())
                 .username(request.getUsername())
+                .creationTime(Instant.now())
                 .build();
         var createdTaskEntity = taskRepository.insert(taskEntity);
 
@@ -89,6 +92,7 @@ public class TasksController implements TasksApi {
                 .name(taskEntity.getName())
                 .description(taskEntity.getDescription())
                 .username(taskEntity.getUsername())
+                .creationTime(taskEntity.getCreationTime().atOffset(ZoneOffset.UTC))
                 .build();
     }
 }

@@ -7,16 +7,17 @@ info:
 paths:
   /tasks:
     get:
+      operationId: getTasks
       description: Returns a list of tasks
       parameters:
-        - name: limit
+        - name: page
           in: query
-          description: Limits the number of items on a page
+          description: Zero-based page index
           schema:
             type: integer
-        - name: offset
+        - name: size
           in: query
-          description: Specifies the page number of the tasks to be displayed
+          description: The size of the page to return
           schema:
             type: integer
       responses:
@@ -29,6 +30,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Task'
     post:
+      operationId: createTask
       description: Create a new task
       requestBody:
         required: true
@@ -55,6 +57,7 @@ paths:
 
   /tasks/{task_id}:
     get:
+      operationId: getTaskById
       description: Get task by id
       parameters:
         - name: task_id

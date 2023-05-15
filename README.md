@@ -1,7 +1,4 @@
-start the service `./gradlew bootRun`
-start the service in debug mode `./gradlew bootRun --debug-jvm`
-list tasks `./gradlew tasks`
-generate server stub `./gradlew :openApiGenerate`
+Run cassandra locally in a container `docker run --name cass_cluster -d -p 127.0.0.1:9042:9042 --rm cassandra:latest`
 
 Create a Cassandra keyspace for the application:
 ```
@@ -28,7 +25,9 @@ CREATE TABLE todo.tasks_by_username (
    task_id timeuuid,
    PRIMARY KEY (username, task_id))
 WITH CLUSTERING ORDER BY (task_id DESC);
-
-INSERT INTO todo.task (task_id, name, description, username) VALUES (now(), 'foo task', 'foo task description', 'foo user');
-INSERT INTO todo.tasks_by_username (username, task_id) VALUES ('foo user', 7d87b620-d6a4-11ed-9640-b14676841fa6);
 ```
+
+start the service `./gradlew bootRun`
+start the service in debug mode `./gradlew bootRun --debug-jvm`
+list tasks `./gradlew tasks`
+generate server stub `./gradlew openApiGenerate`

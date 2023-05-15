@@ -2,13 +2,16 @@ package com.hahooy.todo.controllers;
 
 import com.datastax.driver.core.utils.UUIDs;
 import com.hahooy.todo.api.TasksApi;
+import com.hahooy.todo.api.models.CreateTaskRequest;
 import com.hahooy.todo.api.models.Task;
-import com.hahooy.todo.api.models.TasksGetRequest;
 import com.hahooy.todo.daos.TaskByUsernameRepository;
 import com.hahooy.todo.daos.TaskRepository;
 import com.hahooy.todo.dataentities.TaskByUsernameEntity;
 import com.hahooy.todo.dataentities.TaskEntity;
 import lombok.AllArgsConstructor;
+import org.springframework.data.cassandra.core.CassandraTemplate;
+import org.springframework.data.cassandra.core.query.CassandraPageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,20 +29,29 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @AllArgsConstructor(onConstructor = @__(@Inject))
 public class TasksController implements TasksApi {
 
+    private final CassandraTemplate cassandraTemplate;
     private final TaskRepository taskRepository;
     private final TaskByUsernameRepository taskByUsernameRepository;
 
     @Override
-    public ResponseEntity<List<Task>> tasksGet(Integer limit, Integer offset) {
+    public ResponseEntity<List<Task>> getTasks(Integer page, Integer size) {
 
-        var taskIds = taskByUsernameRepository.findAll()
+        Slice<TaskByUsernameEntity> batch = taskByUsernameRepository.findAll(CassandraPageRequest.first(size));
+        for (int i = 1; i <= page; i++) {
+            if (!batch.hasNext()) {
+                return ResponseEntity.ok(List.of());
+            }
+            batch = taskByUsernameRepository.findAll(batch.nextPageable());
+        }
+
+        var taskIds = batch
                 .stream()
                 .map(t -> t.getPrimaryKey().getTaskId())
                 .toList();
 
         var taskIdToTaskEntity = taskRepository.findAllById(taskIds)
                 .stream()
-                .collect(Collectors.toMap(t -> t.getTaskId(), t -> t));
+                .collect(Collectors.toMap(TaskEntity::getTaskId, t -> t));
 
         var tasks = taskIds.stream()
                 .map(taskIdToTaskEntity::get)
@@ -50,7 +62,7 @@ public class TasksController implements TasksApi {
     }
 
     @Override
-    public ResponseEntity<Task> tasksPost(TasksGetRequest request) {
+    public ResponseEntity<Task> createTask(CreateTaskRequest request) {
 
         // insert into task table
         var taskEntity = TaskEntity.builder()
@@ -60,22 +72,25 @@ public class TasksController implements TasksApi {
                 .username(request.getUsername())
                 .creationTime(Instant.now())
                 .build();
-        var createdTaskEntity = taskRepository.insert(taskEntity);
 
         // insert into tasks_by_username table
         var taskByUsernameEntity = TaskByUsernameEntity.builder()
                 .primaryKey(TaskByUsernameEntity.TaskByUsernamePrimaryKey.builder()
-                        .username(createdTaskEntity.getUsername())
-                        .taskId(createdTaskEntity.getTaskId())
+                        .username(taskEntity.getUsername())
+                        .taskId(taskEntity.getTaskId())
                         .build())
                 .build();
-        taskByUsernameRepository.insert(taskByUsernameEntity);
 
-        return ResponseEntity.ok(toDto(createdTaskEntity));
+        var batchOps = cassandraTemplate.batchOps();
+        batchOps.insert(taskEntity)
+                .insert(taskByUsernameEntity)
+                .execute();
+
+        return ResponseEntity.ok(toDto(taskEntity));
     }
 
     @Override
-    public ResponseEntity<Task> tasksTaskIdGet(String taskId) {
+    public ResponseEntity<Task> getTaskById(String taskId) {
 
         var taskEntity = taskRepository.findById(UUID.fromString(taskId));
 

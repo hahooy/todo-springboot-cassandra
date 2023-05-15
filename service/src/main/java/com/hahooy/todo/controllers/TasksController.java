@@ -36,6 +36,8 @@ public class TasksController implements TasksApi {
     @Override
     public ResponseEntity<List<Task>> getTasks(String username, Integer page, Integer size) {
 
+        // Cassandra doesn't support the offset/limit paging pattern, instead it requires a paging state to
+        // forward-only navigate through pages.
         Slice<TaskByUsernameEntity> batch = taskByUsernameRepository
                 .findByUsername(username, CassandraPageRequest.first(size));
         for (int i = 1; i <= page; i++) {

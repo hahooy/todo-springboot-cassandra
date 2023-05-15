@@ -34,19 +34,20 @@ public class TasksController implements TasksApi {
     private final TaskByUsernameRepository taskByUsernameRepository;
 
     @Override
-    public ResponseEntity<List<Task>> getTasks(Integer page, Integer size) {
+    public ResponseEntity<List<Task>> getTasks(String username, Integer page, Integer size) {
 
-        Slice<TaskByUsernameEntity> batch = taskByUsernameRepository.findAll(CassandraPageRequest.first(size));
+        Slice<TaskByUsernameEntity> batch = taskByUsernameRepository
+                .findByUsername(username, CassandraPageRequest.first(size));
         for (int i = 1; i <= page; i++) {
             if (!batch.hasNext()) {
                 return ResponseEntity.ok(List.of());
             }
-            batch = taskByUsernameRepository.findAll(batch.nextPageable());
+            batch = taskByUsernameRepository.findByUsername(username, batch.nextPageable());
         }
 
         var taskIds = batch
                 .stream()
-                .map(t -> t.getPrimaryKey().getTaskId())
+                .map(TaskByUsernameEntity::getTaskId)
                 .toList();
 
         var taskIdToTaskEntity = taskRepository.findAllById(taskIds)
@@ -75,10 +76,8 @@ public class TasksController implements TasksApi {
 
         // insert into tasks_by_username table
         var taskByUsernameEntity = TaskByUsernameEntity.builder()
-                .primaryKey(TaskByUsernameEntity.TaskByUsernamePrimaryKey.builder()
-                        .username(taskEntity.getUsername())
-                        .taskId(taskEntity.getTaskId())
-                        .build())
+                .username(taskEntity.getUsername())
+                .taskId(taskEntity.getTaskId())
                 .build();
 
         var batchOps = cassandraTemplate.batchOps();

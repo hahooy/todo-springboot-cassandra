@@ -10,6 +10,11 @@ paths:
       operationId: getTasks
       description: Returns a list of tasks
       parameters:
+        - name: username
+          in: query
+          description: user to get tasks for
+          schema:
+            type: string
         - name: page
           in: query
           description: Zero-based page index

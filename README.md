@@ -1,6 +1,6 @@
 Run cassandra locally in a container `docker run --name cass_cluster -d -p 127.0.0.1:9042:9042 --rm cassandra:latest`
 
-Create a Cassandra keyspace for the application:
+Start `cqlsh` in the Cassandra container `docker exec -it cass_cluster cqlsh ` and create a Cassandra keyspace for the application:
 ```
 CREATE KEYSPACE todo
   WITH REPLICATION = { 
@@ -27,7 +27,7 @@ CREATE TABLE todo.tasks_by_username (
 WITH CLUSTERING ORDER BY (task_id DESC);
 ```
 
-start the service `./gradlew bootRun`
-start the service in debug mode `./gradlew bootRun --debug-jvm`
-list tasks `./gradlew tasks`
-generate server stub `./gradlew openApiGenerate`
+- start the service `./gradlew bootRun`
+- start the service in debug mode `./gradlew bootRun --debug-jvm`
+- list tasks `./gradlew tasks`
+- generate server stub `./gradlew openApiGenerate`

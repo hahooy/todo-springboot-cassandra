@@ -1,2 +1,3 @@
 rootProject.name = 'todo'
 include 'service'
+project(":service").name = "todo-service"

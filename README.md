@@ -31,3 +31,4 @@ WITH CLUSTERING ORDER BY (task_id DESC);
 - start the service in debug mode `./gradlew bootRun --debug-jvm`
 - list tasks `./gradlew tasks`
 - generate server stub `./gradlew openApiGenerate`
+- [swagger UI](http://localhost:8944/swagger-ui/index.html)

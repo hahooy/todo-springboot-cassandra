@@ -1,0 +1,14 @@
+services:
+  todo-app:
+    platform: "linux/arm64/v8"
+    build: .
+    ports:
+      - "8944:8944"
+    environment:
+      - CASSANDRA_HOST=cassandra
+    depends_on:
+      cassandra:
+        condition: service_started
+  cassandra:
+    platform: "linux/arm64/v8"
+    image: "cassandra:4.1.2"

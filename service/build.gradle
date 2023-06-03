@@ -29,6 +29,7 @@ dependencies {
 	implementation 'com.datastax.cassandra:cassandra-driver-core:3.11.3'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
 	implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+	implementation 'org.cognitor.cassandra:cassandra-migration:2.5.0_v4'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

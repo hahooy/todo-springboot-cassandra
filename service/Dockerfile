@@ -1,11 +1,11 @@
-FROM gradle:7.6.1-jdk17-alpine AS build
+FROM gradle:7.6.1-jdk17-jammy AS build
 
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 
 RUN gradle bootJar
 
-FROM eclipse-temurin:17-alpine
+FROM eclipse-temurin:17-jammy
 
 EXPOSE 8944
 

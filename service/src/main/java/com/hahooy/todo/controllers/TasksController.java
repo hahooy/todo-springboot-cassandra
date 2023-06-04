@@ -9,6 +9,7 @@ import com.hahooy.todo.daos.TaskRepository;
 import com.hahooy.todo.dataentities.TaskByUsernameEntity;
 import com.hahooy.todo.dataentities.TaskEntity;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.springframework.data.cassandra.core.CassandraTemplate;
 import org.springframework.data.cassandra.core.query.CassandraPageRequest;
 import org.springframework.data.domain.Slice;
@@ -34,7 +35,7 @@ public class TasksController implements TasksApi {
     private final TaskByUsernameRepository taskByUsernameRepository;
 
     @Override
-    public ResponseEntity<List<Task>> getTasks(String username, Integer page, Integer size) {
+    public ResponseEntity<List<Task>> getTasks(@NonNull String username, @NonNull Integer page, @NonNull Integer size) {
 
         // Cassandra doesn't support the offset/limit paging pattern, instead it requires a paging state to
         // forward-only navigate through pages.
@@ -65,7 +66,7 @@ public class TasksController implements TasksApi {
     }
 
     @Override
-    public ResponseEntity<Task> createTask(CreateTaskRequest request) {
+    public ResponseEntity<Task> createTask(@NonNull CreateTaskRequest request) {
 
         // insert into task table
         var taskEntity = TaskEntity.builder()
@@ -91,7 +92,7 @@ public class TasksController implements TasksApi {
     }
 
     @Override
-    public ResponseEntity<Task> getTaskById(String taskId) {
+    public ResponseEntity<Task> getTaskById(@NonNull String taskId) {
 
         var taskEntity = taskRepository.findById(UUID.fromString(taskId));
 

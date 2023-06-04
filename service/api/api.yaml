@@ -13,6 +13,7 @@ paths:
         - name: username
           in: query
           description: user to get tasks for
+          required: true
           schema:
             type: string
         - name: page
@@ -20,11 +21,13 @@ paths:
           description: Zero-based page index
           schema:
             type: integer
+            default: 0
         - name: size
           in: query
           description: The size of the page to return
           schema:
             type: integer
+            default: 30
       responses:
         '200':
           description: Successfully returned a list of tasks
@@ -45,6 +48,8 @@ paths:
               type: object
               required:
                 - name
+                - description
+                - username
               properties:
                 name:
                   type: string

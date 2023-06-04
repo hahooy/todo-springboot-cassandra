@@ -1,4 +1,4 @@
-### Local Development
+### Local development
 
 You need to have Cassandra running locally before you can start the service:
 
@@ -14,6 +14,10 @@ You need to have Cassandra running locally before you can start the service:
    docker exec -it cass_cluster cqlsh -e $query
     ```
 3. start the service `./gradlew bootRun`
+
+### Run service using docker compose
+
+Use this command to run the service together with its dependencies using docker compose `docker compose -f service/docker-compose.yml up`.
 
 ### Other commands 
 
